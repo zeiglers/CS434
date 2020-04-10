@@ -15,6 +15,7 @@ if __name__ == '__main__':
 	testpath = "./{}".format(testcsv)
 
 	#part1-1
+	#getting w
 	f = open(trainpath, "r")
 	train = list(csv.reader(f, delimiter=","))
 	train = np.array(train[0:], dtype=np.float)
@@ -31,6 +32,7 @@ if __name__ == '__main__':
 	
 	
 	#part1-2
+	#getting ase of train data
 	
 	pre_train = np.dot(xtrain, w)
 	sse_train = np.subtract(ytrain, pre_train)
@@ -38,7 +40,8 @@ if __name__ == '__main__':
 	sse_train = np.dot(sse_train.transpose(), sse_train)
 	ase_train = sse_train/n_train
 
-	####
+	
+	#getting ase of test data
 	f = open(testpath, "r")
         test = list(csv.reader(f, delimiter=","))
         test = np.array(test[0:], dtype=np.float)
@@ -48,7 +51,6 @@ if __name__ == '__main__':
         ytest = np.delete(test, np.s_[0:13], axis=1)
 
 	xtest = np.insert(xtest, 0, 1, axis = 1)
-	####
 	
 	pre_test = np.dot(xtest, w)
         sse_test = np.subtract(ytest, pre_test)
