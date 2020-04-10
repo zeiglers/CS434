@@ -1,13 +1,21 @@
+#!/bin/python
+
+
 import numpy as np
 import csv
 #import math as m
 #import matplotlib.pyplot as plt
 import sys
 
-def main():
+if __name__ == '__main__':
 	
+	traincsv = str(sys.argv[1])
+	testcsv = str(sys.argv[2])
+	trainpath = "./{}".format(traincsv)
+	testpath = "./{}".format(testcsv)
+
 	#part1-1
-	f = open("./housing_train.csv", "r")
+	f = open(trainpath, "r")
 	train = list(csv.reader(f, delimiter=","))
 	train = np.array(train[0:], dtype=np.float)
 
@@ -20,8 +28,7 @@ def main():
 	
 	xtraint = xtrain.transpose()
 	w = np.dot(np.dot(np.linalg.inv(np.dot(xtraint, xtrain)), xtraint), ytrain)
-
-	print(w)
+	
 	
 	#part1-2
 	
@@ -32,7 +39,7 @@ def main():
 	ase_train = sse_train/n_train
 
 	####
-	f = open("./housing_test.csv", "r")
+	f = open(testpath, "r")
         test = list(csv.reader(f, delimiter=","))
         test = np.array(test[0:], dtype=np.float)
 
@@ -48,11 +55,14 @@ def main():
         n_test = sse_test.shape[0]
         sse_test = np.dot(sse_test.transpose(), sse_test)
         ase_test = sse_test/n_test
+
+	print("\n")	
+	print ("The Learned Weight Vector: {}".format(round(w[0][0],3))),
 	
-	print(ase_test)
+	for x in range(1,w.shape[0]):
+		m = round(w[x][0],3)
+		print("+ ({})(X{})".format(m, x)),
 
-
-
-
-if __name__ == '__main__':
-	main()
+	print("\n")	
+	print("ASE over the training data: {}".format(round(ase_train[0][0],3)))
+	print("ASE over the testing data: {}".format(round(ase_test[0][0],3)))
