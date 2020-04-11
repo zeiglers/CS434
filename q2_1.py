@@ -59,12 +59,14 @@ if __name__ == '__main__':
 
         # While loop for gradient descent
         while True:
+                # Begin gradient descent
                 descent = np.zeros(p_train.shape[1])
+                # Loop through every training item
                 for i in range(p_train.shape[0]):
                         a_predic = 1.0 / (1.0 + m.exp(-np.dot(np.transpose(log), p_train[i])))
                         descent += ((a_predic - a_train[i]) * p_train[i])
                 log -= (nu*(descent + (l[5]*log)))
-
+                # Add each point to the matrix
                 k += 1
                 mx[0].append(k)
                 mx[1].append(acc_point(log, p_train, a_train))
@@ -73,6 +75,7 @@ if __name__ == '__main__':
                 if k == batches:
                         break
 
+        # Plot the graphs
         fig, ax = plt.subplots()
 
         ax.plot(mx[0], mx[1], label="Training")
