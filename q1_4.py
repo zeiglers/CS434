@@ -77,16 +77,15 @@ if __name__ == '__main__':
     
    
 	
-    #print(ytrplot)
-    #print(yteplot)
-    #print(xvalue)
     plt.plot(xvalue, ytrplot)		
+    plt.title("train data plot")
     plt.xlabel('d')
     plt.ylabel('ase_train')
     plt.savefig("train_plot.png")
-		
+    plt.clf()		
 		
     plt.plot(xvalue, yteplot)
     plt.xlabel('d')
+    plt.title("test data plot")
     plt.ylabel('ase_test')
     plt.savefig("test_plot.png")
