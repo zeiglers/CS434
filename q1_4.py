@@ -81,6 +81,8 @@ if __name__ == '__main__':
     plt.title("train data plot")
     plt.xlabel('d')
     plt.ylabel('ase_train')
+    plt.ylim(0,30) 
+    plt.xlim(2,20) 
     plt.savefig("train_plot.png")
     plt.clf()		
 		
