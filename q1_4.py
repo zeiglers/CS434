@@ -75,13 +75,12 @@ if __name__ == '__main__':
 	print(ytrplot)
 	print(yteplot)
 
-	plt.plot(x, ytrplot)		
+	x=[2,4,6,8,10,12,14,16,18,20]
+
+	plt.plot(x, ytrplot, label="Training Set")
+	plt.plot(x, yteplot, label="Testing Set")		
+
 	plt.xlabel('d')
-	plt.ylabel('ase_train')
+	plt.ylabel('ASE')
+	plt.legend(loc="lower right")
 	plt.show()
-		
-		
-	plt.plot(x, yteplot)
-        plt.xlabel('d')
-        plt.ylabel('ase_test')
-        plt.show()	
