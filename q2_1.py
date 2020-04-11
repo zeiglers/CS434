@@ -6,9 +6,6 @@ import math as m
 import matplotlib.pyplot as plt
 import sys
 
-def sigmoid(w_transpose, X_i):
-        return (1.0 / (1.0 + np.exp(-np.dot(w_transpose, X_i))))
-
 def get_acc(w, X, y):
 
         acc_predicts = 0
@@ -17,12 +14,12 @@ def get_acc(w, X, y):
 
                 if y[i] == 1:
 
-                        if sigmoid(np.transpose(w), X[i]) >= 0.5:
+                        if (1.0 / (1.0 + np.exp(-np.dot(np.transpose(w), X[i])))) >= 0.5:
                                 acc_predicts += 1
 
                 elif y[i] == 0:
 
-                        if (1 - sigmoid(np.transpose(w), X[i])) >= 0.5:
+                        if (1 - (1.0 / (1.0 + np.exp(-np.dot(np.transpose(w), X[i]))))) >= 0.5:
                                 acc_predicts += 1
 
         return acc_predicts / len(X)
@@ -34,7 +31,6 @@ if __name__ == '__main__':
         trainpath = "./{}".format(traincsv)
         testpath = "./{}".format(testcsv)
 
-        #getting w
         f = open(trainpath, "r")
         train = list(csv.reader(f, delimiter=","))
         train = np.array(train[0:], dtype=np.float)
@@ -44,6 +40,16 @@ if __name__ == '__main__':
         p_train = np.insert(p_train, 0, 1, axis=1)
 
         a_train = np.delete(train, np.s_[0:256], 1)
+
+        f = open(testpath, "r")
+        test = list(csv.reader(f, delimiter=","))
+        test = np.array(test[0:], dtype=np.float)
+
+        p_test = np.delete(test, 256, 1)
+        p_test = p_test/255
+        p_test = np.insert(p_test, 0, 1, axis=1)
+
+        a_test = np.delete(test, np.s_[0:256], 1)
 
         w_log = np.zeros(p_train.shape[1])
         eps = m.exp(-3)
@@ -65,6 +71,7 @@ if __name__ == '__main__':
 
                 ll_ot[0].append(k)
                 ll_ot[1].append(get_acc(w_log, p_train, a_train))
+                ll_ot[2].append(get_acc(w_log, p_test, a_test))
 
                 if k == num_batches:
                         break
@@ -72,6 +79,7 @@ if __name__ == '__main__':
         fig, ax = plt.subplots()
 
         ax.plot(ll_ot[0], ll_ot[1], label="Training Set")
+        ax.plot(ll_ot[0], ll_ot[2], label="Testing Set")
         ax.legend(loc="lower right")
         plt.show()
 
