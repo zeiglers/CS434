@@ -90,4 +90,8 @@ if __name__ == '__main__':
     plt.xlabel('d')
     plt.title("test data plot")
     plt.ylabel('ase_test')
+
+    plt.ylim(0,30)
+    plt.xlim(2,20)
+
     plt.savefig("test_plot.png")
