@@ -26,6 +26,10 @@ if __name__ == '__main__':
 
 
 	xtrain = np.insert(xtrain, 0, 1, axis = 1) 
+
+        #print(xtrain)
+	#print(ytrain)
+
 	
 	xtraint = xtrain.transpose()
 	w = np.dot(np.dot(np.linalg.inv(np.dot(xtraint, xtrain)), xtraint), ytrain)
