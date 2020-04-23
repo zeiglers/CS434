@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 import re
 
@@ -29,20 +30,36 @@ def clean_text(text):
 
     return text
 
+if __name__ == '__main__':
 
-# this vectorizer will skip stop words
-vectorizer = CountVectorizer(
-    stop_words="english",
-    preprocessor=clean_text,
-    max_features = 2000
-)
+    # this vectorizer will skip stop words
+    vectorizer = CountVectorizer(
+        stop_words="english",
+        preprocessor=clean_text,
+        # Tuning for max_df and min_df
+        #max_df = 1.0
+        #min_df = 1
+        # Add limit on max_features
+        max_features = 2000
+    )
 
-# fit the vectorizer on the text
-vectorizer.fit(imdb_data['review'])
+    # fit the vectorizer on the text
+    vectorizer.fit(imdb_data['review'])
 
-# get the vocabulary
-inv_vocab = {v: k for k, v in vectorizer.vocabulary_.items()}
-vocabulary = [inv_vocab[i] for i in range(len(inv_vocab))]
-print(vocabulary)
+    # get the vocabulary
+    inv_vocab = {v: k for k, v in vectorizer.vocabulary_.items()}
+    vocabulary = [inv_vocab[i] for i in range(len(inv_vocab))]
 
+    # Write vocab to file for testing
+    file = open("vocab.txt","w")
+    for ele in vocabulary:
+        file.write(ele+'\n')
+    file.close
+    #print(vocabulary)
+
+    vector = vectorizer.transform(imdb_data.get("review"))
+    print(vector.toarray())
+
+    temp = clean_text(imdb_data.get("review")[1])
+    print(temp)
 
