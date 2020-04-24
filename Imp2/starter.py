@@ -51,15 +51,16 @@ if __name__ == '__main__':
     vocabulary = [inv_vocab[i] for i in range(len(inv_vocab))]
 
     # Write vocab to file for testing
-    file = open("vocab.txt","w")
-    for ele in vocabulary:
-        file.write(ele+'\n')
-    file.close
+    #file = open("vocab.txt","w")
+    #for ele in vocabulary:
+    #    file.write(ele+'\n')
+    #file.close
     #print(vocabulary)
 
     # Create BOW vectors for each set of the data
     vector = vectorizer.transform(imdb_data.get("review"))
     vectors = vector.toarray()
+    # Split the vector for each set
     temp = np.split(vectors, [30000, 40000])
     train_v = temp[0]
     valid_v = temp[1]
@@ -72,42 +73,67 @@ if __name__ == '__main__':
 
     # Learning P(y = 0) and P(y = 1) from training labels
     # Learning P(wi|y = [0,1])
-    y0_total_words = 0
-    y0_word_v = train_v[0]
-    y1_total_words = 0
-    y1_word_v = train_v[0]
-    leng = len(y0_word_v)
-    for i in range(leng):
-        y0_word_v[i] = 0
-        y1_word_v[i] = 0
 
+    # Initiallize word count total and vectors for negative and positive
+    neg_total_words = 0
+    neg_word_v = train_v[0]
+    pos_total_words = 0
+    pos_word_v = train_v[0]
+
+    # Find length of word vector
+    leng = len(neg_word_v)
+    a = 1 # Alpha set to 1
+    v_a = a * leng # |V| * alpha
+    # Set each vector element to add alpha to start (Laplace Smoothing)
+    for i in range(leng):
+        neg_word_v[i] = a
+        pos_word_v[i] = a
+
+    # Initiallive the number of negative and positive reviews to 0
     num_neg = 0
     num_pos = 0
+
+    # Loop through all 30000 training elements
     leng = len(train_labels)
     for i in range(leng):
-        lengt = len(y0_word_v)
+        lengt = len(neg_word_v)
         if train_labels[i] == "negative":
             num_neg += 1
+            # Loop through each word in review vector
             for j in range(lengt):
-                y0_total_words += train_v[i][j]
-                y0_word_v[j] += train_v[i][j]
+                # Add word count to total neg words and individual word vector
+                neg_total_words += train_v[i][j]
+                neg_word_v[j] += train_v[i][j]
         else:
             num_pos += 1
+            # Loop through each word in review vector
             for j in range(lengt):
-                y1_total_words += train_v[i][j]
-                y1_word_v[j] += train_v[i][j]
-    py0 = num_neg/30000
-    py1 = num_pos/30000
-    y0_P_word_v = np.divide(y0_word_v, y0_total_words)
-    y1_P_word_v = np.divide(y1_word_v, y1_total_words)
-    print("P(y = 0):")
-    print(py0)
-    print("P(y = 1):")
-    print(py1)
-    print(y0_total_words)
-    print(y0_word_v)
-    print(y0_P_word_v)
-    print(y1_total_words)
-    print(y1_word_v)
-    print(y1_P_word_v)
+                # Add word count to total pos words and individual word vector
+                pos_total_words += train_v[i][j]
+                pos_word_v[j] += train_v[i][j]
+
+    # Add |V|a to total word counts (Laplace Smoothing)
+    neg_total_words += v_a
+    pos_total_words += v_a
+
+    # Calculate probability that the review is negative or positive
+    p_neg = num_neg/30000
+    p_pos = num_pos/30000
+
+    # Calculate Naive Bayes probability for seeing each word
+    #  given the review type
+    neg_P_word_v = np.divide(neg_word_v, neg_total_words)
+    pos_P_word_v = np.divide(pos_word_v, pos_total_words)
+
+    # Testing print statements
+    #print("P(y = 0):")
+    #print(p_neg)
+    #print("P(y = 1):")
+    #print(p_pos)
+    #print(neg_total_words)
+    #print(neg_word_v)
+    #print(neg_P_word_v)
+    #print(pos_total_words)
+    #print(pos_word_v)
+    #print(pos_P_word_v)
 
