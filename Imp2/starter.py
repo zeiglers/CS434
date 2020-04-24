@@ -57,9 +57,18 @@ if __name__ == '__main__':
     file.close
     #print(vocabulary)
 
-    vector = vectorizer.transform(imdb_data.get("review"))
-    print(vector.toarray())
 
-    temp = clean_text(imdb_data.get("review")[1])
-    print(temp)
+    # Create BOW vectors for each set of the data
+    vector = vectorizer.transform(imdb_data.get("review"))
+    vectors = vector.toarray()
+    temp = np.split(vectors, [30000, 40000])
+    train_v = temp[0]
+    valid_v = temp[1]
+    test_v = temp[2]
+    print(train_v)
+    print(valid_v)
+    print(test_v)
+
+    #temp = clean_text(imdb_data.get("review")[1])
+    #print(temp)
 
