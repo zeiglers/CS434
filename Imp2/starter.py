@@ -5,7 +5,7 @@ import re
 
 # Importing the dataset
 imdb_data = pd.read_csv('IMDB.csv', delimiter=',')
-
+imdb_labels = pd.read_csv('IMDB_labels.csv', delimiter=',')
 
 def clean_text(text):
 
@@ -65,9 +65,19 @@ if __name__ == '__main__':
     train_v = temp[0]
     valid_v = temp[1]
     test_v = temp[2]
-    print(train_v)
-    print(valid_v)
-    print(test_v)
+    #print(train_v)
+    #print(valid_v)
+    #print(test_v)
+
+    # Create arrays for positive and negative review labels
+    #  where positive = 1 and negative = 0
+    label = {'negative': 0, 'positive': 1}
+    imdb_labels.sentiment = [label[item] for item in imdb_labels.sentiment]
+    temp = np.split(imdb_labels.to_numpy(), [30000])
+    test_labels = temp[0]
+    valid_labels = temp[1]
+    #print(test_labels)
+    #print(valid_labels)
 
     #temp = clean_text(imdb_data.get("review")[1])
     #print(temp)
