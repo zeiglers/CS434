@@ -57,7 +57,6 @@ if __name__ == '__main__':
     file.close
     #print(vocabulary)
 
-
     # Create BOW vectors for each set of the data
     vector = vectorizer.transform(imdb_data.get("review"))
     vectors = vector.toarray()
@@ -65,9 +64,6 @@ if __name__ == '__main__':
     train_v = temp[0]
     valid_v = temp[1]
     test_v = temp[2]
-    #print(train_v)
-    #print(valid_v)
-    #print(test_v)
 
     # Create arrays for training and validation labels
     temp = np.split(imdb_labels.to_numpy(), [30000])
@@ -75,20 +71,43 @@ if __name__ == '__main__':
     valid_labels = temp[1]
 
     # Learning P(y = 0) and P(y = 1) from training labels
+    # Learning P(wi|y = [0,1])
+    y0_total_words = 0
+    y0_word_v = train_v[0]
+    y1_total_words = 0
+    y1_word_v = train_v[0]
+    leng = len(y0_word_v)
+    for i in range(leng):
+        y0_word_v[i] = 0
+        y1_word_v[i] = 0
+
     num_neg = 0
     num_pos = 0
     leng = len(train_labels)
     for i in range(leng):
-        if train_labels[int(i)] == "negative":
+        lengt = len(y0_word_v)
+        if train_labels[i] == "negative":
             num_neg += 1
+            for j in range(lengt):
+                y0_total_words += train_v[i][j]
+                y0_word_v[j] += train_v[i][j]
         else:
             num_pos += 1
-    #print(num_neg)
-    #print(num_pos)
+            for j in range(lengt):
+                y1_total_words += train_v[i][j]
+                y1_word_v[j] += train_v[i][j]
     py0 = num_neg/30000
     py1 = num_pos/30000
+    y0_P_word_v = np.divide(y0_word_v, y0_total_words)
+    y1_P_word_v = np.divide(y1_word_v, y1_total_words)
     print("P(y = 0):")
     print(py0)
     print("P(y = 1):")
     print(py1)
+    print(y0_total_words)
+    print(y0_word_v)
+    print(y0_P_word_v)
+    print(y1_total_words)
+    print(y1_word_v)
+    print(y1_P_word_v)
 
