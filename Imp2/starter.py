@@ -69,16 +69,26 @@ if __name__ == '__main__':
     #print(valid_v)
     #print(test_v)
 
-    # Create arrays for positive and negative review labels
-    #  where positive = 1 and negative = 0
-    label = {'negative': 0, 'positive': 1}
-    imdb_labels.sentiment = [label[item] for item in imdb_labels.sentiment]
+    # Create arrays for training and validation labels
     temp = np.split(imdb_labels.to_numpy(), [30000])
-    test_labels = temp[0]
+    train_labels = temp[0]
     valid_labels = temp[1]
-    #print(test_labels)
-    #print(valid_labels)
 
-    #temp = clean_text(imdb_data.get("review")[1])
-    #print(temp)
+    # Learning P(y = 0) and P(y = 1) from training labels
+    num_neg = 0
+    num_pos = 0
+    leng = len(train_labels)
+    for i in range(leng):
+        if train_labels[int(i)] == "negative":
+            num_neg += 1
+        else:
+            num_pos += 1
+    #print(num_neg)
+    #print(num_pos)
+    py0 = num_neg/30000
+    py1 = num_pos/30000
+    print("P(y = 0):")
+    print(py0)
+    print("P(y = 1):")
+    print(py1)
 
