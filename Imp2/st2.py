@@ -35,15 +35,22 @@ if __name__ == '__main__':
     ##########################################################################
     # PART 1
     ##########################################################################
+    # Tuning Variables
+    df_max = 1.0
+    df_min = 1
+    features_max = 2000
+    a = 1
+    v_a = a * features_max
+
     # this vectorizer will skip stop words
     vectorizer = CountVectorizer(
         stop_words="english",
         preprocessor=clean_text,
         # Tuning for max_df and min_df
-        #max_df = 1.0
-        #min_df = 1
+        #max_df = df_max
+        #min_df = df_min
         # Add limit on max_features
-        max_features = 2000
+        max_features = features_max
     )
 
 
@@ -77,9 +84,7 @@ if __name__ == '__main__':
     #print(p_pos)
 
 
-    #get total # of words and #of word i
-    v_a = 2000
-
+    #get total # of words and # of word i
     train_rows_pos = np.array([train_rows_pos])
     pos_word_v = np.dot(train_rows_pos, train_v)
     pos_total_words = pos_word_v.sum()
@@ -96,8 +101,8 @@ if __name__ == '__main__':
     #print(neg_total_words)
     #print(pos_total_words)
 
-    pos_word_v = (pos_word_v + 1)
-    neg_word_v = (neg_word_v + 1)
+    pos_word_v = (pos_word_v + a)
+    neg_word_v = (neg_word_v + a)
 
     #print(neg_word_v)
     #print(pos_word_v)
@@ -106,8 +111,8 @@ if __name__ == '__main__':
     pos_P_word_v = np.divide(pos_word_v, pos_total_words)
     neg_P_word_v = np.divide(neg_word_v, neg_total_words)
 
-    #print(pos_P_word_v)
-    #print(neg_P_word_v)
+    print(pos_P_word_v)
+    print(neg_P_word_v)
 
 
     ##########################################################################
