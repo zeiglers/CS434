@@ -32,6 +32,9 @@ def clean_text(text):
 
 if __name__ == '__main__':
 
+    ##########################################################################
+    # PART 1
+    ##########################################################################
     # this vectorizer will skip stop words
     vectorizer = CountVectorizer(
         stop_words="english",
@@ -58,20 +61,23 @@ if __name__ == '__main__':
     valid_labels = temp[1]
 
 
+    ##########################################################################
+    # PART 2
+    ##########################################################################
     #get p(y=0) and p(y=1) from training labels
     train_rows = imdb_labels.iloc[0:30000]
     train_rows = pd.Series(train_rows['sentiment'])
-    train_rows_pos = train_rows.str.count("positive") 
-    train_rows_neg = train_rows.str.count("negative") 
+    train_rows_pos = train_rows.str.count("positive")
+    train_rows_neg = train_rows.str.count("negative")
     num_pos = train_rows_pos.sum(axis = 0, skipna = True)
     num_neg = train_rows_neg.sum(axis = 0, skipna = True)
     p_neg = num_neg/30000
     p_pos = num_pos/30000
-    print(p_neg)
-    print(p_pos)
-    
+    #print(p_neg)
+    #print(p_pos)
 
-    #get total # of words and #of word i 
+
+    #get total # of words and #of word i
     v_a = 2000
 
     train_rows_pos = np.array([train_rows_pos])
@@ -80,25 +86,44 @@ if __name__ == '__main__':
     #print(pos_total_words)
     pos_total_words += v_a
 
-    
+
     train_rows_neg = np.array([train_rows_neg])
     neg_word_v = np.dot(train_rows_neg, train_v)
     neg_total_words = neg_word_v.sum()
     #print(neg_total_words)
     neg_total_words += v_a
 
-    print(neg_total_words)
-    print(pos_total_words)
+    #print(neg_total_words)
+    #print(pos_total_words)
 
     pos_word_v = (pos_word_v + 1)
     neg_word_v = (neg_word_v + 1)
-    
-    print(neg_word_v)
-    print(pos_word_v)
+
+    #print(neg_word_v)
+    #print(pos_word_v)
     #Calculate Naive Bayes probability for seeing each word
 
     pos_P_word_v = np.divide(pos_word_v, pos_total_words)
     neg_P_word_v = np.divide(neg_word_v, neg_total_words)
-        
-    print(pos_P_word_v)
-    print(neg_P_word_v)
+
+    #print(pos_P_word_v)
+    #print(neg_P_word_v)
+
+
+    ##########################################################################
+    # PART 3
+    ##########################################################################
+
+    # Loop through each validation review
+        # Calculate P for pos and neg based on pos_P_word_v and neg_P_word_v
+        # Keep higher probability
+        # Record Guess for each validation review
+    # Compare validation guesses with validation labels
+    # Output accuracy
+
+    # Loop through each test review
+        # Calculate P for pos and neg based on pos_P_word_v and neg_P_word_v
+        # Keep higher probability
+        # Record Guess for each test review
+    # Print Guesses to file "test-prediction1.csv"
+
