@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 import re
+import csv
 
 # Importing the dataset
 imdb_data = pd.read_csv('IMDB.csv', delimiter=',')
@@ -80,9 +81,7 @@ if __name__ == '__main__':
     num_neg = train_rows_neg.sum(axis = 0, skipna = True)
     p_neg = num_neg/30000
     p_pos = num_pos/30000
-    #print(p_neg)
-    #print(p_pos)
-
+    
 
     #get total # of words and # of word i
     train_rows_pos = np.array([train_rows_pos])
@@ -111,24 +110,62 @@ if __name__ == '__main__':
     pos_P_word_v = np.divide(pos_word_v, pos_total_words)
     neg_P_word_v = np.divide(neg_word_v, neg_total_words)
 
-    print(pos_P_word_v)
-    print(neg_P_word_v)
+
 
 
     ##########################################################################
     # PART 3
     ##########################################################################
 
-    # Loop through each validation review
-        # Calculate P for pos and neg based on pos_P_word_v and neg_P_word_v
-        # Keep higher probability
-        # Record Guess for each validation review
-    # Compare validation guesses with validation labels
-    # Output accuracy
+    # p(y|x) validation
+    pos_P_word_v = pos_P_word_v.transpose()
+    pos_P_word_v = np.log(pos_P_word_v)
+    pos_result_v = np.dot(valid_v, pos_P_word_v)
+    pos_result_v = pos_result_v + np.log(p_pos)
 
-    # Loop through each test review
-        # Calculate P for pos and neg based on pos_P_word_v and neg_P_word_v
-        # Keep higher probability
-        # Record Guess for each test review
-    # Print Guesses to file "test-prediction1.csv"
+    neg_P_word_v = neg_P_word_v.transpose()
+    neg_P_word_v = np.log(neg_P_word_v)
+    neg_result_v = np.dot(valid_v, neg_P_word_v)
+    neg_result_v = neg_result_v + np.log(p_neg)
+    
+
+    accuracy = 0
+    for i in range(10000):
+        if pos_result_v[i][0] > neg_result_v[i][0]:
+            if valid_labels[i][0] == "positive":
+                accuracy += 1
+        elif neg_result_v[i][0] > pos_result_v[i][0]:
+            if valid_labels[i][0] == "negative":
+                accuracy += 1
+
+    accuracy = (accuracy/10000)*100
+    print("the percentage of the accuracy is {}%".format(accuracy))
+
+
+    # p(y|x) test
+    pos_final_v = np.dot(test_v, pos_P_word_v)
+    pos_final_v = pos_final_v + np.log(p_pos)
+
+    neg_final_v = np.dot(test_v, neg_P_word_v)
+    neg_final_v = neg_final_v + np.log(p_neg)
+
+    
+    field = ['sentiment']
+    rows = []
+    for i in range(10000):
+        if pos_final_v[i][0] > neg_final_v[i][0]:
+            rows.append(['positive'])
+        elif neg_final_v[i][0] > pos_final_v[i][0]:
+            rows.append(['negative'])
+
+    with open('test-prediction1.csv', 'w') as csvfile:  
+        csvwriter = csv.writer(csvfile)  
+        csvwriter.writerow(field)  
+        csvwriter.writerows(rows)
+            
+    
+
+
+
+
 
