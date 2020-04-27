@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 import re
 import csv
+import matplotlib.pyplot as plt
 
 # Importing the dataset
 imdb_data = pd.read_csv('IMDB.csv', delimiter=',')
@@ -48,8 +49,8 @@ if __name__ == '__main__':
         stop_words="english",
         preprocessor=clean_text,
         # Tuning for max_df and min_df
-        #max_df = df_max
-        #min_df = df_min
+        max_df = df_max,
+        min_df = df_min,
         # Add limit on max_features
         max_features = features_max
     )
@@ -163,9 +164,137 @@ if __name__ == '__main__':
         csvwriter.writerow(field)  
         csvwriter.writerows(rows)
             
+
+'''
+    ##########################################################################
+    # PART 4
+    ##########################################################################
+
+    #alpha tuning
+    alpha       = 0.0
+    optAlpha    = 0
+    optAcc      = 0
+    alphaRes    = []
+    accRes      = []
+    tuning      = True
+    tuned       = False
     
+    while(tuning):
 
+        #while loop check
+        if tuned:
+            tuning = False
+        
+        ##################
+        #Train Naive Bayes
+        ##################
+        
+        #get p(y=0) and p(y=1) from training labels
+        train_rows = imdb_labels.iloc[0:30000]
+        train_rows = pd.Series(train_rows['sentiment'])
+        train_rows_pos = train_rows.str.count("positive")
+        train_rows_neg = train_rows.str.count("negative")
+        num_pos = train_rows_pos.sum(axis = 0, skipna = True)
+        num_neg = train_rows_neg.sum(axis = 0, skipna = True)
+        p_neg = num_neg/30000
+        p_pos = num_pos/30000
+        
 
+        #get total # of words and # of word i
+        train_rows_pos = np.array([train_rows_pos])
+        pos_word_v = np.dot(train_rows_pos, train_v)
+        pos_total_words = pos_word_v.sum()
 
+        train_rows_neg = np.array([train_rows_neg])
+        neg_word_v = np.dot(train_rows_neg, train_v)
+        neg_total_words = neg_word_v.sum()
 
+        pos_total_words += (features_max * alpha)
+        neg_total_words += (features_max * alpha)
+        pos_word_v = (pos_word_v + alpha)
+        neg_word_v = (neg_word_v + alpha)
 
+        #Calculate Naive Bayes probability for seeing each word
+        pos_P_word_v = np.divide(pos_word_v, pos_total_words)
+        neg_P_word_v = np.divide(neg_word_v, neg_total_words)
+
+        ###################
+        # Apply to val data
+        ###################
+        
+        # p(y|x) validation
+        pos_P_word_v = pos_P_word_v.transpose()
+        pos_P_word_v = np.log(pos_P_word_v)
+        pos_result_v = np.dot(valid_v, pos_P_word_v)
+        pos_result_v = pos_result_v + np.log(p_pos)
+
+        neg_P_word_v = neg_P_word_v.transpose()
+        neg_P_word_v = np.log(neg_P_word_v)
+        neg_result_v = np.dot(valid_v, neg_P_word_v)
+        neg_result_v = neg_result_v + np.log(p_neg)
+        
+
+        accuracy = 0
+        for i in range(10000):
+            if pos_result_v[i][0] > neg_result_v[i][0]:
+                if valid_labels[i][0] == "positive":
+                    accuracy += 1
+            elif neg_result_v[i][0] > pos_result_v[i][0]:
+                if valid_labels[i][0] == "negative":
+                    accuracy += 1
+
+        accuracy = (accuracy/10000)*100
+
+        ##########################
+        # Check for optimal tuning
+        ##########################
+        
+        if(accuracy > optAcc):
+            optAlpha = alpha
+            optAcc = accuracy
+
+        if(alpha >= 1.9):
+            #run one tuned loop then exit
+            alpha = optAlpha
+            tuned = True
+        elif(not tuned):
+            #increment alpha and add to plot array
+            alphaRes.append(alpha)
+            accRes.append(accuracy)
+            alpha += 0.2
+
+        #############
+        # Write data
+        #############
+        if not tuning:
+            # p(y|x) test
+            pos_final_v = np.dot(test_v, pos_P_word_v)
+            pos_final_v = pos_final_v + np.log(p_pos)
+
+            neg_final_v = np.dot(test_v, neg_P_word_v)
+            neg_final_v = neg_final_v + np.log(p_neg)
+
+            #Write tuned data to file
+            field = ['sentiment']
+            rows = []
+            for i in range(10000):
+                if pos_final_v[i][0] > neg_final_v[i][0]:
+                    rows.append(['positive'])
+                elif neg_final_v[i][0] > pos_final_v[i][0]:
+                    rows.append(['negative'])
+
+            with open('test-prediction2.csv', 'w') as csvfile:  
+                csvwriter = csv.writer(csvfile)  
+                csvwriter.writerow(field)  
+                csvwriter.writerows(rows)
+
+            #Plot alphas
+            plt.plot(alphaRes, accRes)		
+            plt.title("Bayes Tuning Accuracy")
+            plt.xlabel('Alpha Value')
+            plt.ylabel('Validation Accuracy')
+            plt.savefig("tuning_plot.png")
+            #plt.show()
+
+    
+'''
