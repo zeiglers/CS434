@@ -35,7 +35,7 @@ def clean_text(text):
 if __name__ == '__main__':
 
     ##########################################################################
-    # PART 1
+    # PART 5
     ##########################################################################
     # Tuning Variables
     df_max = 1.0
@@ -76,10 +76,6 @@ if __name__ == '__main__':
         train_labels = temp[0]
         valid_labels = temp[1]
 
-
-        ##########################################################################
-        # PART 2
-        ##########################################################################
         #get p(y=0) and p(y=1) from training labels
         train_rows = imdb_labels.iloc[0:30000]
         train_rows = pd.Series(train_rows['sentiment'])
@@ -95,35 +91,22 @@ if __name__ == '__main__':
         train_rows_pos = np.array([train_rows_pos])
         pos_word_v = np.dot(train_rows_pos, train_v)
         pos_total_words = pos_word_v.sum()
-        #print(pos_total_words)
         pos_total_words += v_a
 
 
         train_rows_neg = np.array([train_rows_neg])
         neg_word_v = np.dot(train_rows_neg, train_v)
         neg_total_words = neg_word_v.sum()
-        #print(neg_total_words)
         neg_total_words += v_a
 
-        #print(neg_total_words)
-        #print(pos_total_words)
 
         pos_word_v = (pos_word_v + a)
         neg_word_v = (neg_word_v + a)
 
-        #print(neg_word_v)
-        #print(pos_word_v)
         #Calculate Naive Bayes probability for seeing each word
 
         pos_P_word_v = np.divide(pos_word_v, pos_total_words)
         neg_P_word_v = np.divide(neg_word_v, neg_total_words)
-
-
-
-
-        ##########################################################################
-        # PART 3
-        ##########################################################################
 
         # p(y|x) validation
         pos_P_word_v = pos_P_word_v.transpose()
@@ -147,7 +130,7 @@ if __name__ == '__main__':
                     accuracy += 1
 
         accuracy = (accuracy/10000)*100
-        print("the percentage of the accuracy is {}%".format(accuracy))
+        #print("percentage accuracy with df_max=", df_max, " df_min=", df_min, "feature_max=", features_max, "is {}%".format(accuracy))
 
 
         if(accuracy > optAcc):
