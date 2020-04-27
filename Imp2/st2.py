@@ -289,12 +289,12 @@ if __name__ == '__main__':
                 csvwriter.writerows(rows)
 
             #Plot alphas
-            plt.plot(alphaRes, accRes)		
+            '''plt.plot(alphaRes, accRes)		
             plt.title("Bayes Tuning Accuracy")
             plt.xlabel('Alpha Value')
             plt.ylabel('Validation Accuracy')
             plt.savefig("tuning_plot.png")
-            #plt.show()
+            plt.show()'''
 
     
 '''
