@@ -51,41 +51,40 @@ def random_forest_testing(x_train, y_train, x_test, y_test):
 	print('Test {}'.format(test_accuracy))
 	preds = rclf.predict(x_test)
 	print('F1 Test {}'.format(f1(y_test, preds)))
-	
+
 def decision_tree_depth_test(x_train, y_train, x_test, y_test):
-        depth_range = range(1, 26)
-        accuracy_tr = []
-        accuracy_ts = []
-        f1_s = []
-	
-	print('\n=====Depth test=====\n\n')
-        print('Testing range 1-25...\n')
-        
-        for i in depth_range:
-             
-                clf = DecisionTreeClassifier(max_depth=i)
-                clf.fit(x_train, y_train)
-                preds_train = clf.predict(x_train)
-                preds_test = clf.predict(x_test)
-                train_accuracy = accuracy_score(preds_train, y_train)
-                test_accuracy = accuracy_score(preds_test, y_test)
-                preds = clf.predict(x_test)
+    depth_range = range(1, 26)
+    accuracy_tr = []
+    accuracy_ts = []
+    f1_s = []
 
-                accuracy_tr.append(train_accuracy)
-                accuracy_ts.append(test_accuracy)
-                f1_s.append(f1(y_test, preds))
+    print('\n=====Depth test=====\n\n')
+    print('Testing range 1-25...\n')
 
-        #plot
-        print('\n')
-        fig, ax = plt.subplots()
-        
-        ax.plot(depth_range, accuracy_tr, label="Training Accuracy")
-        ax.plot(depth_range, accuracy_ts, label="Test Accuracy")
-        ax.plot(depth_range, f1_s, label="F1")
-        ax.legend(loc="lower right")
-        plt.xlabel('Depth')
-        plt.title("Behavior across tree depths")
-        plt.show()
+    for i in depth_range:
+        clf = DecisionTreeClassifier(max_depth=i)
+        clf.fit(x_train, y_train)
+        preds_train = clf.predict(x_train)
+        preds_test = clf.predict(x_test)
+        train_accuracy = accuracy_score(preds_train, y_train)
+        test_accuracy = accuracy_score(preds_test, y_test)
+        preds = clf.predict(x_test)
+
+        accuracy_tr.append(train_accuracy)
+        accuracy_ts.append(test_accuracy)
+        f1_s.append(f1(y_test, preds))
+
+    #plot
+    print('\n')
+    fig, ax = plt.subplots()
+
+    ax.plot(depth_range, accuracy_tr, label="Training Accuracy")
+    ax.plot(depth_range, accuracy_ts, label="Test Accuracy")
+    ax.plot(depth_range, f1_s, label="F1")
+    ax.legend(loc="lower right")
+    plt.xlabel('Depth')
+    plt.title("Behavior across tree depths")
+    plt.show()
 
 
 ###################################################
@@ -103,10 +102,4 @@ if __name__ == '__main__':
 		random_forest_testing(x_train, y_train, x_test, y_test)
 
 	print('Done')
-
-
-
-
-
-
 
