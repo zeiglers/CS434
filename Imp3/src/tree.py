@@ -1,4 +1,6 @@
 import numpy as np
+import pandas as pd
+import random
 
 class Node():
     """
@@ -35,8 +37,9 @@ class DecisionTreeClassifier():
         The maximum depth to build the tree. Root is at depth 0, a single split makes depth 1 (decision stump)
     """
 
-    def __init__(self, n_trees=None, max_features=None, max_depth=None):
+    def __init__(self, max_features=None, max_depth=None):
         self.max_depth = max_depth
+        self.max_features = max_features
 
     # take in features X and labels y
     # build a tree
@@ -90,8 +93,13 @@ class DecisionTreeClassifier():
 
         # if we haven't hit the maximum depth, keep building
         if depth <= self.max_depth:
-            # consider each feature
-            for feature in self.features_idx:
+            # create list of all features
+            column_idx = list(self.features_idx)
+            # Check if there is more features to use
+            if self.max_features and self.max_features <= len(self.features_idx):
+                column_idx = random.sample(population=column_idx, k=self.max_features)
+            # consider each randomly selected feature
+            for feature in column_idx:
                 # consider the set of all values for that feature to split on
                 possible_splits = np.unique(X[:, feature])
                 for split in possible_splits:
@@ -182,7 +190,7 @@ class RandomForestClassifier():
         self.max_depth = max_depth
 
         ##################
-        #
+        self.forest = []
         ##################
 
     # fit all trees
@@ -192,7 +200,9 @@ class RandomForestClassifier():
         for i in range(self.n_trees):
             print(i+1, end='\t\r')
             ##################
-            #
+            tree = DecisionTreeClassifier(max_depth=self.max_depth, max_features=self.max_features)
+            tree.fit(bagged_X, bagged_y)
+            self.forest.append(tree)
             ##################
         print()
 
@@ -200,9 +210,12 @@ class RandomForestClassifier():
         bagged_X = []
         bagged_y = []
         for i in range(self.n_trees):
-            continue
+            #continue
             ##################
-            #
+            j = np.random.randint(low=0, high=len(X))
+            bagged_X.append(X[j])
+            bagged_y.append(y[j])
+            # print('adding {}'.format(j))
             ##################
 
         # ensure data is still numpy arrays
@@ -213,11 +226,17 @@ class RandomForestClassifier():
         preds = []
 
         # remove this one \/
-        preds = np.ones(len(X)).astype(int)
+        #preds = np.ones(len(X)).astype(int)
         # ^that line is only here so the code runs
 
         ##################
-        #
+        pred = {}
+        for i in range(len(self.forest)):
+            col_name = "tree_{}".format(i)
+            predictions = self.forest[i].predict(X)
+            pred[col_name] = predictions
+        pred = pd.DataFrame(pred)
+        preds = pred.mode(axis=1)[0]
         ##################
         return preds
 

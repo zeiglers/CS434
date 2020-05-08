@@ -7,7 +7,7 @@ sns.set()
 import argparse
 
 from utils import load_data, f1, accuracy_score, load_dictionary, dictionary_info
-from rantree import DecisionTreeClassifier, RandomForestClassifier
+from tree import DecisionTreeClassifier, RandomForestClassifier
 
 def load_args():
 
@@ -41,7 +41,7 @@ def decision_tree_testing(x_train, y_train, x_test, y_test):
 
 def random_forest_testing(x_train, y_train, x_test, y_test):
 	print('Random Forest\n\n')
-	rclf = RandomForestClassifier(max_depth=7, max_features=11, n_trees=50)
+	rclf = RandomForestClassifier(max_depth=7, max_features=11, n_trees=10)
 	rclf.fit(x_train, y_train)
 	preds_train = rclf.predict(x_train)
 	preds_test = rclf.predict(x_test)
