@@ -97,7 +97,7 @@ class DecisionTreeClassifier():
             # Check if there is more features to use
             if self.max_features and self.max_features <= len(self.features_idx):
                 column_idx = random.sample(population=column_idx, k=self.max_features)
-            # consider each feature
+            # consider each randomly selected feature
             for feature in column_idx:
                 # consider the set of all values for that feature to split on
                 possible_splits = np.unique(X[:, feature])
@@ -189,7 +189,7 @@ class RandomForestClassifier():
         self.max_depth = max_depth
 
         ##################
-        #
+        self.forest = []
         ##################
 
     # fit all trees
@@ -199,7 +199,9 @@ class RandomForestClassifier():
         for i in range(self.n_trees):
             print(i+1, end='\t\r')
             ##################
-            #
+            tree = DecisionTreeClassifier(max_depth=self.max_depth, max_features=self.max_features)
+            tree.fit(bagged_X, bagged_y)
+            self.forest.append(tree)
             ##################
         print()
 
@@ -207,9 +209,12 @@ class RandomForestClassifier():
         bagged_X = []
         bagged_y = []
         for i in range(self.n_trees):
-            continue
+            #continue
             ##################
-            #
+            j = np.random.randint(low=0, high=len(X))
+            bagged_X.append(X[j])
+            bagged_y.append(y[j])
+            # print('adding {}'.format(j))
             ##################
 
         # ensure data is still numpy arrays
@@ -220,11 +225,14 @@ class RandomForestClassifier():
         preds = []
 
         # remove this one \/
-        preds = np.ones(len(X)).astype(int)
+        #preds = np.ones(len(X)).astype(int)
         # ^that line is only here so the code runs
 
         ##################
-        #
+        for i in range(len(self.forest)):
+            predictions = self.forest[i].predict(X)
+            preds.append(predictions)
+
         ##################
         return preds
 
