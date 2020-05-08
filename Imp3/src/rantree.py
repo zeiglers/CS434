@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import random
 
 class Node():
@@ -229,10 +230,12 @@ class RandomForestClassifier():
         # ^that line is only here so the code runs
 
         ##################
+        pred = []
         for i in range(len(self.forest)):
             predictions = self.forest[i].predict(X)
-            preds.append(predictions)
-
+            pred.append(predictions)
+        pred = pd.DataFrame(pred)
+        preds = pred.mode(axis=1)[0]
         ##################
         return preds
 
