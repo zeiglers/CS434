@@ -230,10 +230,11 @@ class RandomForestClassifier():
         # ^that line is only here so the code runs
 
         ##################
-        pred = []
+        pred = {}
         for i in range(len(self.forest)):
+            col_name = "tree_{}".format(i)
             predictions = self.forest[i].predict(X)
-            pred.append(predictions)
+            pred[col_name] = predictions
         pred = pd.DataFrame(pred)
         preds = pred.mode(axis=1)[0]
         ##################
