@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 class Node():
     """
@@ -35,8 +36,9 @@ class DecisionTreeClassifier():
         The maximum depth to build the tree. Root is at depth 0, a single split makes depth 1 (decision stump)
     """
 
-    def __init__(self, n_trees=None, max_features=None, max_depth=None):
+    def __init__(self, max_features=None, max_depth=None):
         self.max_depth = max_depth
+        self.max_features = max_features
 
     # take in features X and labels y
     # build a tree
@@ -90,8 +92,13 @@ class DecisionTreeClassifier():
 
         # if we haven't hit the maximum depth, keep building
         if depth <= self.max_depth:
+            # create list of all features
+            column_idx = list(self.features_idx)
+            # Check if there is more features to use
+            if self.max_features and self.max_features <= len(self.features_idx):
+                column_idx = random.sample(population=column_idx, k=self.max_features)
             # consider each feature
-            for feature in self.features_idx:
+            for feature in column_idx:
                 # consider the set of all values for that feature to split on
                 possible_splits = np.unique(X[:, feature])
                 for split in possible_splits:

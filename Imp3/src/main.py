@@ -7,7 +7,7 @@ sns.set()
 import argparse
 
 from utils import load_data, f1, accuracy_score, load_dictionary, dictionary_info
-from tree import DecisionTreeClassifier, RandomForestClassifier
+from rantree import DecisionTreeClassifier, RandomForestClassifier
 
 def load_args():
 
