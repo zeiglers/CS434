@@ -191,6 +191,7 @@ class RandomForestClassifier():
 
         ##################
         self.forest = []
+        random.seed(0)
         ##################
 
     # fit all trees
