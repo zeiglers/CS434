@@ -247,14 +247,38 @@ class RandomForestClassifier():
 # MUST MODIFY THIS EXISTING DECISION TREE CODE #
 ################################################
 class AdaBoostClassifier():
+    """
+    AdaBoost Classifier, create weighted classifiers
+    Use this calssifier to predict the results
+
+    Parameters:
+    -----------
+    sample_weights: double?
+        The weights for the data
+    stumps: trees with depth of 1
+        The trees each with a depth of 1
+    stump_weights: vector of weights
+        The weights for each tree
+    errors: vector of errors for each tree
+        The errors in classification for each stump
+    """
     def __init__(self):
+        self.sample_weights = None
+        self.stumps = None
+        self.stump_weights = None
+        self.errors = None
+
+    def fit(self, X, y):
         pass
 
 
+    def predict(self, X):
+        preds = []
 
+        # remove this one \/
+        preds = np.ones(len(X)).astype(int)
 
-
-
+        return preds
 
 
 

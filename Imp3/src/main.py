@@ -7,7 +7,7 @@ sns.set()
 import argparse
 
 from utils import load_data, f1, accuracy_score, load_dictionary, dictionary_info
-from tree import DecisionTreeClassifier, RandomForestClassifier
+from tree import DecisionTreeClassifier, RandomForestClassifier, AdaBoostClassifier
 
 def load_args():
 
@@ -86,6 +86,20 @@ def decision_tree_depth_test(x_train, y_train, x_test, y_test):
     plt.title("Behavior across tree depths")
     plt.show()
 
+def adaboost_testing(x_train, y_train, x_test, y_test):
+    print('AdaBoost\n\n')
+    y_train[y_train==0] = -1
+    y_test[y_test==0] = -1
+    aclf = AdaBoostClassifier()
+    aclf.fit(x_train, y_train)
+    preds_train = aclf.predict(x_train)
+    preds_test = aclf.predict(x_test)
+    train_accuracy = accuracy_score(preds_train, y_train)
+    test_accuracy = accuracy_score(preds_test, y_test)
+    print('Train {}'.format(train_accuracy))
+    print('Test {}'.format(test_accuracy))
+    preds = aclf.predict(x_test)
+    print('F1 Test {}'.format(f1(y_test, preds)))
 
 ###################################################
 # Modify for running your experiments accordingly #
@@ -100,6 +114,8 @@ if __name__ == '__main__':
 		decision_tree_depth_test(x_train, y_train, x_test, y_test)
 	if args.random_forest == 1:
 		random_forest_testing(x_train, y_train, x_test, y_test)
+	if args.ada_boost == 1:
+		adaboost_testing(x_train, y_train, x_test, y_test)
 
 	print('Done')
 
