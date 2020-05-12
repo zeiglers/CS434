@@ -289,7 +289,7 @@ class AdaBoostClassifier():
 
         for t in range (1, M):
             #h = Learn(S, D)
-            h_t = self.fit(X, y, D)
+            self.fit(X, y, D)
             preds_i = self.dec_predict(X)
 
             #check miss
@@ -301,7 +301,7 @@ class AdaBoostClassifier():
             err = np.dot(D, check)/D.sum()
                             
             #alpha calculation                
-            alpha_t = 1/2*ln((1-err[t])/err[t])
+            alpha_t = 1/2*np.log((1-err)/err)
 
             #set weights
             for i in check:

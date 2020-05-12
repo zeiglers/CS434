@@ -115,6 +115,7 @@ def adaboost_l_test(x_train, y_train, x_test, y_test):
     f1_s = []
     best_l, best_acc = 0, 0
 
+    print("\n===Ada Boost===\n")
     print('Testing L range 10-200...\n')
     
     y_train[y_train==0] = -1
@@ -122,13 +123,17 @@ def adaboost_l_test(x_train, y_train, x_test, y_test):
 
 
     for M in depth_range:
+        print('L = ', M, '\n---------\n')
         aclf = AdaBoostClassifier()
         aclf.fit(x_train, y_train, [1]*len(x_train))
         preds_train = aclf.predict(x_train, y_train, M)
         preds_test = aclf.predict(x_test, y_test, M)
         train_accuracy = accuracy_score(preds_train, y_train)
         test_accuracy = accuracy_score(preds_test, y_test)
-        preds = aclf.predict(x_test)
+        print('Train {}'.format(train_accuracy))
+        print('Test {}'.format(test_accuracy))
+        preds = aclf.predict(x_test, y_test, M)
+        print('F1 Test {}'.format(f1(y_test, preds)))
 
         if(test_accuracy > best_acc):
                 best_acc = test_accuracy
@@ -167,8 +172,7 @@ if __name__ == '__main__':
         if args.random_forest == 1:
                 random_forest_testing(x_train, y_train, x_test, y_test)
         if args.ada_boost == 1:
-                adaboost_testing(x_train, y_train, x_test, y_test, 10)
-                #adaboost_l_test(x_train, y_train, x_test, y_test)
+                adaboost_l_test(x_train, y_train, x_test, y_test)
 
         print('Done')
 
