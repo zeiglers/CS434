@@ -26,7 +26,8 @@ class KMeans():
         self.centers = np.zeros((self.k, x.shape[1]))
 
         ################################
-        #      YOUR CODE GOES HERE     #
+        for i in range(self.k):
+            self.centers[i] = x[i]
         ################################
 
     def revise_centers(self, x, labels):
@@ -49,7 +50,9 @@ class KMeans():
         """
         labels = np.zeros((x.shape[0]), dtype=int)
         ##################################
-        #      YOUR CODE GOES HERE       #
+        #for i in self.centers:
+        #    distances[i] = np.linalg.norm(x-self.centers[i])
+        #labels = distances.index(min(distances))
         ##################################
         return labels
 

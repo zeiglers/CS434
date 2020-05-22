@@ -83,7 +83,7 @@ def visualize(x_train, y_train):
     ##################################
 
 
-def apply_kmeans(do_pca, x_train, y_train, x_test, y_test, kmeans_max_iter, kmeans_max_k):
+def apply_kmeans(do_pca, x_train, y_train, kmeans_max_iter, kmeans_max_k):
     print('kmeans\n')
     train_sses_vs_iter = []
     train_sses_vs_k = []
@@ -112,16 +112,16 @@ def apply_kmeans(do_pca, x_train, y_train, x_test, y_test, kmeans_max_iter, kmea
 
 if __name__ == '__main__':
     args = load_args()
-    x_train, y_train, x_test, y_test = load_data(args.root_dir)
+    x_train, y_train = load_data(args.root_dir)
 
     if args.pca == 1:
         pca = PCA(args.pca_retain_ratio)
         pca.fit(x_train)
         x_train = pca.transform(x_train)
-        x_test = pca.transform(x_test)
+        #x_test = pca.transform(x_test)
         visualize(x_train, y_train)
 
     if args.kmeans == 1:
-        apply_kmeans(args.pca, x_train, y_train, x_test, y_test, args.kmeans_max_iter, args.kmeans_max_k)
+        apply_kmeans(args.pca, x_train, y_train, args.kmeans_max_iter, args.kmeans_max_k)
 
     print('Done')
