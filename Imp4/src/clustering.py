@@ -1,4 +1,5 @@
 import numpy as np
+import random as rd
 
 
 class KMeans():
@@ -53,6 +54,10 @@ class KMeans():
         #for i in self.centers:
         #    distances[i] = np.linalg.norm(x-self.centers[i])
         #labels = distances.index(min(distances))
+        distances = []
+        for i in self.centers:
+            distances.append(np.linalg.norm(x-self.centers))
+        labels = distances.index(min(distances))
         ##################################
         return labels
 
@@ -64,11 +69,12 @@ class KMeans():
         :return: float scalar of sse
         """
 
+        sse = 0.
         ##################################
-        #      YOUR CODE GOES HERE       #
+        for i in (0, shape.x[1]):
+            sse += (abs(x[i][0]-labels[i]))**2
         ##################################
 
-        sse = 0.
         return sse
 
     def get_purity(self, x, y):
@@ -81,7 +87,13 @@ class KMeans():
         labels = self.predict(x)
         purity = 0
         ##################################
-        #      YOUR CODE GOES HERE       #
+        length = len(labels)
+        
+        for i in (0, length):
+            if(labels[i] == y[i]):
+                purity += 1
+                
+        purity /= length
         ##################################
         return purity
 
