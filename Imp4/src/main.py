@@ -90,7 +90,6 @@ def apply_kmeans(do_pca, x_train, y_train, kmeans_max_iter, kmeans_max_k):
     train_purities_vs_k = []
 
     ##################################
-    #      YOUR CODE GOES HERE       #
     ##################################
 
     for k in range(1, kmeans_max_k):
